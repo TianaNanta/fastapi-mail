@@ -34,6 +34,7 @@ opentelemetry-instrumentation = "^0.39b0"
 opentelemetry-instrumentation-fastapi = "^0.39b0"
 opentelemetry-instrumentation-logging = "^0.39b0"
 opentelemetry-instrumentation-sqlalchemy = "^0.39b0"
+fastapi-mail = "^1.4.1"
 
 
 [tool.poetry.dev-dependencies]
