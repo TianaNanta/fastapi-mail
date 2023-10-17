@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: mail:${MAIL_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MAIL_HOST: 0.0.0.0
+      MAIL_DB_HOST: mail-db
+      MAIL_DB_PORT: 5432
+      MAIL_DB_USER: mail
+      MAIL_DB_PASS: mail
+      MAIL_DB_BASE: mail
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: mail-db
+    environment:
+      POSTGRES_PASSWORD: "mail"
+      POSTGRES_USER: "mail"
+      POSTGRES_DB: "mail"
+    volumes:
+    - mail-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U mail
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: mail:${MAIL_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      MAIL_DB_HOST: mail-db
+      MAIL_DB_PORT: 5432
+      MAIL_DB_USER: mail
+      MAIL_DB_PASS: mail
+      MAIL_DB_BASE: mail
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+
+volumes:
+  mail-db-data:
+    name: mail-db-data
