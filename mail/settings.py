@@ -59,6 +59,21 @@ class Settings(BaseSettings):
     # E.G. http://localhost:4317
     opentelemetry_endpoint: Optional[str] = None
 
+    # App settings
+    VERSION: str = "0.1.0"
+
+    # SMTP config
+    USERNAME: str = "username"
+    PASSWORD: str = "password"
+    FROM: str = "username@example.com"
+    PORT: int = 465
+    SERVER: str = "mail smtp"
+    FROM_NAME: str = "Desired name"
+    STARTTLS: bool = True
+    SSL_TLS: bool = False
+    USE_CREDENTIALS: bool = True
+    VALIDATE_CERTS: bool = True
+
     @property
     def db_url(self) -> URL:
         """
